@@ -1,3 +1,7 @@
-export function printToTerminal(text, role = "") { const terminal = document.getElementById("terminal"); const line = document.createElement("div"); line.textContent = text; line.className = role; terminal.appendChild(line); terminal.scrollTop = terminal.scrollHeight; }
+export function printToTerminal(text, role = "") { const log = document.getElementById("log"); const line = document.createElement("div"); line.textContent = text;
 
-export function loadJSON(file, callback) { fetch(file) .then((res) => res.json()) .then((data) => callback(data)) .catch((err) => printToTerminal("Error loading file: " + file)); }
+if (role === "judge") line.style.color = "#d43f3f"; else if (role === "witness") line.style.color = "#3f51b5"; else if (role === "juror") line.style.color = "#00897b"; else if (role === "prosecutor") line.style.color = "#ff9800"; else if (role === "system") line.style.color = "#aaaaaa";
+
+log.appendChild(line); log.scrollTop = log.scrollHeight; }
+
+export function loadJSON(path, callback) { fetch(path) .then((res) => { if (!res.ok) throw new Error(Failed to load ${path}); return res.json(); }) .then((data) => callback(data)) .catch((err) => printToTerminal("⚠️ " + err.message, "system")); }
