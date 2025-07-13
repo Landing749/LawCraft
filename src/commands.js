@@ -1,29 +1,45 @@
-import { print } from "./utils.js";
-import { loadCase } from "./loader.js";
+import { printToTerminal, loadJSON } from "./utils.js"; import { getJudgeResponse, getWitnessResponse, getJurorReaction, getProsecutorResponse } from "./ai.js";
 
 let currentCase = null;
 
-export function handleCommand(cmd) {
-  const parts = cmd.toLowerCase().split(" ");
+export function handleCommand(input) { const [command, ...args] = input.trim().split(" ");
 
-  if (parts[0] === "loadcase" && parts[1]) {
-    const caseName = parts[1];
-    loadCase(caseName).then((data) => {
-      currentCase = data;
-      data.intro.forEach(print);
-    }).catch(() => {
-      print("❌ Failed to load case.");
-    });
-  } else if (parts[0] === "view" && parts[1] === "metadata" && parts[2]) {
-    if (!currentCase) return print("⚠️ Load a case first.");
-    const id = parts.slice(2).join(" ");
-    const evidence = currentCase.evidence.find(e => e.id === id);
-    if (!evidence) return print("⚠️ Evidence not found.");
-    print(Metadata for ${evidence.name}:);
-    Object.entries(evidence.metadata).forEach(([k, v]) => {
-      print(- ${k}: ${v});
-    });
+switch (command.toLowerCase()) { case "loadcase": if (args.length === 0) { printToTerminal("Usage: loadcase [filename]"); return; } loadJSON(cases/${args[0]}.json, (data) => { currentCase = data; printToTerminal(📂 Loaded Case: ${data.title}, "system"); data.intro.forEach((line) => printToTerminal(line)); }); break;
+
+case "view":
+  if (args[0] === "metadata" && args[1]) {
+    const id = args.slice(1).join(" ");
+    const evidence = currentCase?.evidence?.find((e) => e.id === id);
+    if (!evidence) {
+      printToTerminal("❌ Evidence not found.");
+    } else {
+      printToTerminal(🔎 Metadata for ${evidence.name});
+      for (const [key, value] of Object.entries(evidence.metadata)) {
+        printToTerminal(- ${key}: ${value});
+      }
+    }
   } else {
-    print("❓ Unknown command.");
+    printToTerminal("Usage: view metadata [evidence_id]");
   }
-}
+  break;
+
+case "objection":
+  getJudgeResponse(args.join(" ")).then((res) => printToTerminal(JUDGE: ${res}, "judge"));
+  break;
+
+case "askwitness":
+  getWitnessResponse(args.join(" ")).then((res) => printToTerminal(WITNESS: ${res}, "witness"));
+  break;
+
+case "juryreact":
+  getJurorReaction().then((res) => printToTerminal(JUROR: ${res}, "juror"));
+  break;
+
+case "prosecute":
+  getProsecutorResponse(args.join(" ")).then((res) => printToTerminal(PROSECUTOR: ${res}, "prosecutor"));
+  break;
+
+default:
+  printToTerminal("❓ Unknown command.");
+
+} }
