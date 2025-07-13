@@ -1,4 +1,5 @@
 const judgeAI = { ruleOnObjection: (objectionText) => { const text = objectionText.toLowerCase();
+console.log("✅ judge.js loaded");
 
 if (text.includes("hearsay")) {
   return Math.random() < 0.5
