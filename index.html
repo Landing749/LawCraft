@@ -1,25 +1,31 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LAWCRAFT Beta</title>
+  <title>LAWCRAFT</title>
   <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
   <header>
     <h1>LAWCRAFT</h1>
-    <div id="tester-credit">Thanks to all beta testers</div>
+    <span class="beta">Thanks to beta testers</span>
   </header>
-  <main>
-    <div id="terminal"></div>
-    <input id="user-input" placeholder="Enter command..." autofocus />
-  </main>
+
+  <div id="log"></div>
+
+  <form id="commandForm">
+    <input id="commandInput" type="text" placeholder="Type a command..." autocomplete="off" />
+    <button type="submit">Send</button>
+  </form>
+
+  <!-- SCRIPTS -->
   <script src="src/utils.js"></script>
-<script src="src/loader.js"></script>
-<script src="ai/judge.js"></script>
-<script src="ai/prosecutor.js"></script>
-<script src="ai/witness.js"></script>
-<script src="src/commands.js"></script>
-<script src="src/main.js"></script>
+  <script src="src/loader.js"></script>
+  <script src="ai/judge.js"></script>
+  <script src="ai/prosecutor.js"></script>
+  <script src="ai/witness.js"></script>
+  <script src="src/commands.js"></script>
+  <script src="src/main.js"></script>
 </body>
 </html>
