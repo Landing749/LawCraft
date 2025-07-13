@@ -1,0 +1,5 @@
+body { background-color: black; color: #0aff0a; font-family: monospace; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+
+#log { padding: 1rem; overflow-y: auto; flex-grow: 1; }
+
+#command { width: 100%; padding: 1rem; border: none; outline: none; background: black; color: #0aff0a; font-size: 1rem; font-family: monospace; border-top: 1px solid #0aff0a; }
