@@ -1,45 +1,65 @@
-import { printToTerminal, loadJSON } from "./utils.js"; import { getJudgeResponse, getWitnessResponse, getJurorReaction, getProsecutorResponse } from "./ai.js";
+import { loadCase } from "./loader.js";
+import { appendToLog, printMetadata } from "./utils.js";
+import { judgeObjection } from "../ai/judge.js";
+import { witnessResponse } from "../ai/witness.js";
+import { jurorThoughts } from "../ai/juror.js";
+import { prosecutorReply } from "../ai/prosecutor.js";
 
 let currentCase = null;
 
-export function handleCommand(input) { const [command, ...args] = input.trim().split(" ");
+export function handleCommand(cmd) {
+  const parts = cmd.trim().toLowerCase().split(" ");
+  if (!parts.length) return;
 
-switch (command.toLowerCase()) { case "loadcase": if (args.length === 0) { printToTerminal("Usage: loadcase [filename]"); return; } loadJSON(cases/${args[0]}.json, (data) => { currentCase = data; printToTerminal(📂 Loaded Case: ${data.title}, "system"); data.intro.forEach((line) => printToTerminal(line)); }); break;
+  const command = parts[0];
 
-case "view":
-  if (args[0] === "metadata" && args[1]) {
-    const id = args.slice(1).join(" ");
-    const evidence = currentCase?.evidence?.find((e) => e.id === id);
-    if (!evidence) {
-      printToTerminal("❌ Evidence not found.");
+  if (command === "loadcase" && parts.length > 1) {
+    const name = parts[1];
+    currentCase = loadCase(name);
+    if (currentCase) {
+      appendToLog(Loaded case: ${currentCase.title}, "system");
+      currentCase.intro.forEach((line) => appendToLog(line, "narration"));
     } else {
-      printToTerminal(🔎 Metadata for ${evidence.name});
-      for (const [key, value] of Object.entries(evidence.metadata)) {
-        printToTerminal(- ${key}: ${value});
-      }
+      appendToLog("❌ Failed to load case.", "error");
     }
+
+  } else if (command === "listcases") {
+    fetch("/cases/index.json")
+      .then((res) => res.json())
+      .then((cases) => {
+        appendToLog("📁 Available Cases:", "system");
+        cases.forEach((c) => {
+          appendToLog(- ${c.id} → ${c.title}, "system");
+        });
+      })
+      .catch(() => appendToLog("⚠️ Could not fetch case list.", "error"));
+
+  } else if (command === "view" && parts[1] === "metadata" && parts.length >= 3) {
+    if (!currentCase) return appendToLog("⚠️ Load a case first.", "warning");
+    const evidenceId = parts.slice(2).join(" ");
+    const ev = currentCase.evidence.find((e) => e.id === evidenceId);
+    if (ev) {
+      printMetadata(ev);
+    } else {
+      appendToLog("❌ Evidence not found.", "error");
+    }
+
+  } else if (command === "objection") {
+    const reason = parts.slice(1).join(" ");
+    judgeObjection(reason);
+
+  } else if (command === "askwitness") {
+    const question = parts.slice(1).join(" ");
+    witnessResponse(question);
+
+  } else if (command === "juryreact") {
+    jurorThoughts();
+
+  } else if (command === "askprosecutor") {
+    const q = parts.slice(1).join(" ");
+    prosecutorReply(q);
+
   } else {
-    printToTerminal("Usage: view metadata [evidence_id]");
+    appendToLog("❓ Unknown command. Try: listcases, loadcase <id>, objection <type>, view metadata <evidence_id>", "error");
   }
-  break;
-
-case "objection":
-  getJudgeResponse(args.join(" ")).then((res) => printToTerminal(JUDGE: ${res}, "judge"));
-  break;
-
-case "askwitness":
-  getWitnessResponse(args.join(" ")).then((res) => printToTerminal(WITNESS: ${res}, "witness"));
-  break;
-
-case "juryreact":
-  getJurorReaction().then((res) => printToTerminal(JUROR: ${res}, "juror"));
-  break;
-
-case "prosecute":
-  getProsecutorResponse(args.join(" ")).then((res) => printToTerminal(PROSECUTOR: ${res}, "prosecutor"));
-  break;
-
-default:
-  printToTerminal("❓ Unknown command.");
-
-} }
+}
