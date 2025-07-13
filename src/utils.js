@@ -1,7 +1,17 @@
-export function printToTerminal(text, role = "") { const log = document.getElementById("log"); const line = document.createElement("div"); line.textContent = text;
+export function appendToLog(message, role = "system") {
+  const logContainer = document.getElementById("log");
 
-if (role === "judge") line.style.color = "#d43f3f"; else if (role === "witness") line.style.color = "#3f51b5"; else if (role === "juror") line.style.color = "#00897b"; else if (role === "prosecutor") line.style.color = "#ff9800"; else if (role === "system") line.style.color = "#aaaaaa";
+  const entry = document.createElement("div");
+  entry.className = log-entry ${role};
+  entry.textContent = message;
 
-log.appendChild(line); log.scrollTop = log.scrollHeight; }
+  logContainer.appendChild(entry);
+  logContainer.scrollTop = logContainer.scrollHeight;
+}
 
-export function loadJSON(path, callback) { fetch(path) .then((res) => { if (!res.ok) throw new Error(Failed to load ${path}); return res.json(); }) .then((data) => callback(data)) .catch((err) => printToTerminal("⚠️ " + err.message, "system")); }
+export function printMetadata(evidence) {
+  appendToLog(📄 Metadata for ${evidence.name}:, "evidence");
+  for (const [key, value] of Object.entries(evidence.metadata)) {
+    appendToLog(- ${key}: ${value}, "evidence");
+  }
+}
