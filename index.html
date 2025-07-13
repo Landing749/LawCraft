@@ -1,14 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>LAWCRAFT - Beta</title>
-  <link rel="stylesheet" href="./styles/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LAWCRAFT Beta</title>
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-  <h1>LAWCRAFT: The People vs. Gov. Salazar</h1>
-  <div id="log"></div>
-  <input id="command" type="text" placeholder="Enter command..." autofocus>
-  <script type="module" src="./src/main.js"></script>
+  <header>
+    <h1>LAWCRAFT</h1>
+    <div id="tester-credit">Thanks to all beta testers</div>
+  </header>
+  <main>
+    <div id="terminal"></div>
+    <input id="user-input" placeholder="Enter command..." autofocus />
+  </main>
+  <script src="scripts/ai.js"></script>
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>
