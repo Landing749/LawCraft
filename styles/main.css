@@ -1,5 +1,25 @@
-body { background-color: black; color: #0aff0a; font-family: monospace; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+body {
+  background-color: #111;
+  color: #eee;
+  font-family: monospace;
+  padding: 20px;
+}
 
-#log { padding: 1rem; overflow-y: auto; flex-grow: 1; }
+#log {
+  height: 70vh;
+  overflow-y: auto;
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
 
-#command { width: 100%; padding: 1rem; border: none; outline: none; background: black; color: #0aff0a; font-size: 1rem; font-family: monospace; border-top: 1px solid #0aff0a; }
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  background: #333;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
