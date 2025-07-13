@@ -1,4 +1,5 @@
 const witnessAI = { answerQuestion: (question, context) => { const lowered = question.toLowerCase();
+console.log("✅ witness.js loaded");
 
 if (lowered.includes("where were you") || lowered.includes("alibi")) {
   return "I was in the library, reading alone. I didn’t hear anything unusual until the screams.";
