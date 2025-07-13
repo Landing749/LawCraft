@@ -1,4 +1,5 @@
 const prosecutorAI = { respondToStatement: (statement, context) => { const lowered = statement.toLowerCase();
+console.log("✅ prosecutor.js loaded");
 
 // Smart rebuttal logic
 if (lowered.includes("no evidence")) {
