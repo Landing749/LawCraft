@@ -1,17 +1,20 @@
-export function appendToLog(message, role = "system") {
-  const logContainer = document.getElementById("log");
+import { appendToLog } from "./utils.js";
 
-  const entry = document.createElement("div");
-  entry.className = log-entry ${role};
-  entry.textContent = message;
+export async function loadCase(caseId) {
+  try {
+    const res = await fetch(cases/${caseId}.json);
+    if (!res.ok) throw new Error("Case file not found.");
+    const data = await res.json();
 
-  logContainer.appendChild(entry);
-  logContainer.scrollTop = logContainer.scrollHeight;
-}
+    appendToLog(✅ Loaded case: ${data.title}, "system");
 
-export function printMetadata(evidence) {
-  appendToLog(📄 Metadata for ${evidence.name}:, "evidence");
-  for (const [key, value] of Object.entries(evidence.metadata)) {
-    appendToLog(- ${key}: ${value}, "evidence");
+    if (data.intro && Array.isArray(data.intro)) {
+      data.intro.forEach((line) => appendToLog(line, "narration"));
+    }
+
+    return data;
+  } catch (err) {
+    appendToLog(❌ Error loading case: ${err.message}, "error");
+    return null;
   }
 }
