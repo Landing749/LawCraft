@@ -1,6 +1,11 @@
 const logEl = document.getElementById("log");
 
 export function print(text) {
+  if (!logEl) {
+    console.error("❌ Cannot find element with id='log'");
+    return;
+  }
+
   const roleMap = {
     "judge:": "orange",
     "prosecutor:": "red",
@@ -11,19 +16,21 @@ export function print(text) {
     "chief:": "#0ff"
   };
 
+  let coloredText = text;
+
   for (const role in roleMap) {
     const regex = new RegExp(^${role}, "i");
     if (regex.test(text)) {
-      const colored = text.replace(
+      coloredText = text.replace(
         regex,
         <span style="color:${roleMap[role]}; font-weight:bold;">${role.toUpperCase()}</span>
       );
-      logEl.innerHTML += <div>> ${colored}</div>;
-      logEl.scrollTop = logEl.scrollHeight;
-      return;
+      break;
     }
   }
 
-  logEl.innerHTML += <div>> ${text}</div>;
+  const line = document.createElement("div");
+  line.innerHTML = > ${coloredText};
+  logEl.appendChild(line);
   logEl.scrollTop = logEl.scrollHeight;
 }
