@@ -1,22 +1,17 @@
 import { handleCommand } from "./commands.js";
-import { print } from "./utils.js";
+import { appendToLog } from "./utils.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("command");
+// Grab input field and log container
+const input = document.getElementById("commandInput");
+const form = document.getElementById("commandForm");
 
-  if (!input) {
-    console.error("Input element not found.");
-    return;
+// Listen for form submission (Enter key or button click)
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const command = input.value.trim();
+  if (command) {
+    appendToLog(> ${command}, "user");
+    handleCommand(command);
+    input.value = "";
   }
-
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      const cmd = input.value.trim();
-      input.value = "";
-      if (cmd) {
-        print(> ${cmd});
-        handleCommand(cmd);
-      }
-    }
-  });
 });
